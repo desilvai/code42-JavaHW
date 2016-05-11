@@ -1,0 +1,7 @@
+5
+4.2
+foo
+The quick brown fox
+jumped over the lazy dog.
+foo
+7
