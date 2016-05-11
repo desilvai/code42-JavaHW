@@ -7,9 +7,9 @@
  * permitted by law.
  */
 
-package com.code42.test;
+package com.code42.inputAnalysis.test;
 
-import com.code42.FileProcessor;
+import com.code42.inputAnalysis.FileProcessor;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -33,30 +33,26 @@ public class FileProcessorTest
      * @throws IOException  fail if this is thrown
      */
     @Test
-    public void testWithGivenSampleInput() throws IOException
+    public void testToStringWithGivenSampleInput() throws IOException
     {
         String testFileName = "givenSampleInput.txt";
         String expectedOutput = "  Sum of Numbers: 16.20\n" +
                 "  Average of Numbers: 5.40\n" +
                 "  Median of Numbers: 5.00\n" +
                 "  Percent of lines that are numbers: 42.86\n" +
-                "  Non-numeric strings in file:\n" +
+                "  Non-numeric strings in file (with count):\n" +
                 "    The quick brown fox:1\n" +
                 "    jumped over the lazy dog.:1\n" +
                 "    foo:2\n";
 
         // Given
-        FileProcessor processor = new FileProcessor();
-
-        // When
         File inputFile = new File(TEST_RESOURCES_PATH +
                                           File.separator +
                                           testFileName);
-        processor.readFile(inputFile);
+        FileProcessor processor = new FileProcessor(inputFile);
 
-        // Then
+        // Get the stats on the file
         String actualOutput = processor.toString();
-        System.err.println(actualOutput);
         Assert.assertEquals(expectedOutput, actualOutput);
     }
 
@@ -72,15 +68,39 @@ public class FileProcessorTest
     {
         String testFileName = "nonexistentFile";
 
-        // Given
-        FileProcessor processor = new FileProcessor();
-
-        // When
+        // Parse the file
         File inputFile = new File(TEST_RESOURCES_PATH +
                                           File.separator +
                                           testFileName);
-        processor.readFile(inputFile);
+        FileProcessor processor = new FileProcessor(inputFile);
 
         // Then -- we never get here.
+    }
+
+
+    /**
+     * Run a test using an empty file.
+     *
+     * @throws IOException  fail if this is thrown
+     */
+    @Test
+    public void testToStringWithEmptyFile() throws IOException
+    {
+        String testFileName = "emptySampleInput.txt";
+        String expectedOutput = "  Sum of Numbers: 0.00\n" +
+                "  Average of Numbers: UNDEFINED\n" +
+                "  Median of Numbers: NONE\n" +
+                "  Percent of lines that are numbers: UNDEFINED (no lines parsed)\n" +
+                "  Non-numeric strings in file (with count): NONE\n";
+
+        // Parse the file
+        File inputFile = new File(TEST_RESOURCES_PATH +
+                                          File.separator +
+                                          testFileName);
+        FileProcessor processor = new FileProcessor(inputFile);
+
+        // Get the stats on the file
+        String actualOutput = processor.toString();
+        Assert.assertEquals(expectedOutput, actualOutput);
     }
 }

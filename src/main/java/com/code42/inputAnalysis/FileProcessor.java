@@ -1,14 +1,12 @@
-/**
+/*
  * Copyright (c) 2016, Ian J. De Silva
- * All rights reserved.
+ * All Rights Reserved
  *
  * Use, distribution, and modification of this work for any purpose is strictly
  * prohibited without the express consent of the copyright holder except as
  * permitted by law.
  */
-package com.code42;
-
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+package com.code42.inputAnalysis;
 
 import java.io.IOException;
 import java.io.FileReader;
@@ -16,12 +14,20 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Formatter;
+import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
 
 /**
- * Created by ian on 5/4/16.
+ * This class defines an immutable object that parses a specified file and
+ * stores the information it memory.  This object allows the caller to
+ * interrogate the parser about the contents of the file.
  */
-public class FileProcessor
+public final class FileProcessor
 {
     //--------------------------------------------------------------------
     //  CONSTANTS
@@ -54,17 +60,20 @@ public class FileProcessor
      * O(1) to find the median.  Using Java's built-ins are more maintainable,
      * so we choose those.
      *
-     * Also, we assume that there is no number in the input file that is
-     * greater than Double.MAX_VALUE (we will further restrict this for
-     * summation).
+     * It is possible that there are numbers in the input file that are very
+     * large, so we chose to use BigDecimals to store them.  Yes, this is
+     * slower than using a Double, but it gives us some added robustness and
+     * it keeps the types consistent within the file.  BigDecimals also
+     * have better rounding support, so there is some added benefit there.
      */
     private List<BigDecimal> numbers = new ArrayList<>();
 
     // TODO -- Verify this restriction on the contents of the input file.
     /**
-     * While it is certainly plausible that the sum of all numbers within the
-     * input file are greater than Double.MAX_VALUE, we will assume that this
-     * will not occur.
+     * It is plausible that the sum of all numbers within the input file are
+     * greater than Double.MAX_VALUE, so we use BigDecimal to give us some
+     * protection.  Also, BigDecimal provides us with a nice way of rounding
+     * values.
      */
     private BigDecimal sum = BigDecimal.valueOf(0);
 
@@ -78,6 +87,37 @@ public class FileProcessor
 
 
     //--------------------------------------------------------------------
+    //  Constructor
+    //--------------------------------------------------------------------
+    /**
+     * Constructor
+     *
+     * Reads in a given text file and parses it, looking for numbers and
+     * non-numeric strings.  For numbers,
+     * @param file  the file to read in and parse
+     */
+    public FileProcessor(File file) throws IOException
+    {
+        if(null == file)
+        {
+            // No file to process.  Exit.
+            return;
+        }
+
+        // Using a BufferedReader here handles multiple newline formats.
+        try( BufferedReader reader = new BufferedReader(new FileReader(file)) )
+        {
+            fileName = file.getName();
+
+            reader.lines().forEach(this::processLine);
+
+            // Sort the list of numbers now so we don't have to do it every
+            // time we want the median.
+            Collections.sort(numbers);
+        }
+    }
+
+    //--------------------------------------------------------------------
     //  Public API
     //--------------------------------------------------------------------
     /**
@@ -87,6 +127,12 @@ public class FileProcessor
      */
     public void readFile(File file) throws IOException
     {
+        if(null == file)
+        {
+            // No file to process.  Exit.
+            return;
+        }
+
         // Using a BufferedReader here handles multiple newline formats.
         try( BufferedReader reader = new BufferedReader(new FileReader(file)) )
         {
@@ -135,17 +181,22 @@ public class FileProcessor
      * @param src  the string to find in the list of strings for the file.
      *
      * @return  true if the file contains the provided string.  This will
-     *          return false if src is a number.
+     *          return false if src is parsable as a number or if it contains
+     *          newline characters.
      */
     public boolean contains(String src)
     {
-        // TODO
-        throw new NotImplementedException();
+        if(null == src)
+        {
+            return false;
+        }
+        return nonNumericStrings.containsKey(src);
     }
 
 
     /**
-     * Prints out the file's statistics to standard out.
+     * Prints out the file's statistics to standard out as specified by
+     * {@link #toString()}.
      */
     public void printFileStatistics()
     {
@@ -189,8 +240,10 @@ public class FileProcessor
         final String labelFormat =  "  %s: %." + DECIMAL_PRECISION + "f\n";
         formatter.format(labelFormat, "Sum of Numbers", sum);
 
+        // If there are no numbers, we can't find the average or median.
         if(numbers.size() == 0)
         {
+            // TODO -- What should be emitted if there are no numbers?
             formatter.format("  Average of Numbers: UNDEFINED\n");
             formatter.format("  Median of Numbers: NONE\n");
         }
@@ -209,25 +262,45 @@ public class FileProcessor
         }
 
         // Percentages
-        double percentNumbers = (numbers.size() * 100.0) / lineCount;
-        formatter.format(labelFormat,
-                         "Percent of lines that are numbers",
-                         percentNumbers);
-
-        // Print strings in reverse order (StackOverflow had a nicer way
-        // of reversing the string array, so I'm using that:
-        // http://stackoverflow.com/questions/13779643/sorting-an-array-of-strings-in-reverse-alphabetical-order-in-java#13780089)
-        // Performance: O(n lg n) to sort the keys, O(n) to print them.
-        String[] keys = nonNumericStrings.keySet().toArray(new String[0]);
-        Arrays.sort(keys,
-                    Collections.reverseOrder(String.CASE_INSENSITIVE_ORDER));
-
-        formatter.format("  Non-numeric strings in file:\n");
-        for(String key : keys)
+        if(lineCount > 0)
         {
-            Integer count = nonNumericStrings.get(key);
-            formatter.format("    %s:%d\n", key, count);
+            double percentNumbers = (numbers.size() * 100.0) / lineCount;
+            formatter.format(labelFormat,
+                             "Percent of lines that are numbers",
+                             percentNumbers);
         }
+        else
+        {
+            // TODO -- What should be emitted if there are no lines in the file.
+            formatter.format("  Percent of lines that are numbers: UNDEFINED (no lines parsed)\n");
+        }
+
+        // Print strings in reverse order (S
+
+        formatter.format("  Non-numeric strings in file (with count):");
+        String[] keys = nonNumericStrings.keySet().toArray(new String[0]);
+        if(keys.length == 0)
+        {
+            formatter.format(" NONE\n");
+        }
+        else
+        {
+            formatter.format("\n");
+
+            // StackOverflow had a nicer way of reversing the string array
+            // (using an existing comparator), so I'm using that:
+            // http://stackoverflow.com/questions/13779643/sorting-an-array-of-strings-in-reverse-alphabetical-order-in-java#13780089)
+            // Performance: O(n lg n) to sort the keys, O(n) to print them.
+            Arrays.sort(keys,
+                        Collections.reverseOrder(String.CASE_INSENSITIVE_ORDER));
+
+            for(String key : keys)
+            {
+                Integer count = nonNumericStrings.get(key);
+                formatter.format("    %s:%d\n", key, count);
+            }
+        }
+
 
         return outputString.toString();
     }
@@ -285,8 +358,11 @@ public class FileProcessor
         }
 
         BigDecimal quantity = BigDecimal.valueOf(numbers.size());
-        return sum.divide(quantity).setScale(DECIMAL_PRECISION,
-                                             ROUNDING_MODE);
+        return sum.divide(quantity);
+
+//        // Don't need to round unless we make this public.
+//        return sum.divide(quantity).setScale(DECIMAL_PRECISION,
+//                                             ROUNDING_MODE);
     }
 
 
@@ -328,8 +404,11 @@ public class FileProcessor
             median = medianHigh.add(medianLow).divide(BigDecimal.valueOf(2));
         }
 
-        return median.setScale(DECIMAL_PRECISION,
-                               ROUNDING_MODE);
+        return median;
+
+//        // Don't need to round unless we make this public.
+//        return median.setScale(DECIMAL_PRECISION,
+//                               ROUNDING_MODE);
     }
 
 
