@@ -164,7 +164,7 @@ public class FileScanner
                 throw new AssertionError("Unknown File: " + file.toString());
             }
         }
-        
+
     } //END ScanResult
 
 } //END FileScanner
