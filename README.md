@@ -47,6 +47,8 @@ number of test input files:
       double to overflow
   * negativeNumbers.txt -- a file containing signed numbers and at least
       one number that is in scientific notation and one with a leading 0
+  * sumTest.txt -- a file that contains numbers whose sum will have more than
+      two decimal plances
 
 #### Test 1: Invalid File
 This checks that an exception is thrown if we attempt to analyze a 
@@ -233,7 +235,33 @@ rounding during the division because it would continue to compute the
 decimal value for an infinite number of places (or when the JVM decided 
 to throw an ArithmeticException).
 
- 
+
+#### Test 7: Sum Precision
+We want to check that the getTotal() function returns a value that has been 
+rounded to 2 decimal places.
+
+    >java -classpath build/libs/code42-1.0.jar  com.code42.inputAnalysis.InputAnalysisDriver src/test/resources/fileProcessor/sumTest.txt "" " "
+    Printed String:
+      Sum of Numbers: 6.07
+      Average of Numbers: 2.02
+      Median of Numbers: 2.02
+      Percent of lines that are numbers: 100.00
+      Non-numeric strings in file (with count): NONE
+    
+    
+    Sum: 6.07
+    Number of Numbers: 3
+    
+    
+    Strings Present?
+      "":  false
+      " ":  false
+    
+    
+    Done!
+
+
+
 Testing: Exercise 2, The File Scanner
 -------------------------------------
 To execute a non-JUnit test, you can use the included test driver.  Run:
@@ -245,7 +273,20 @@ output.  You can run these same commands from the top-level directory of
 the program distribution and should see the same results.  Note that 
 this was tested on Ubuntu 14.04 LTS from bash.
 
-The test resources are located in `src/test/resources/scanning`.  
+The test resources are located in `src/test/resources/scanning`.  The directory
+is laid out as follows
+  dirA/
+    dir1/
+      emptyFile.txt -- a 0B file
+      lorem2055 -- a 2055B text file with ipsum lorem
+    dir2/
+      lorem71919 -- a 71919B text file with ipsum lorem
+  dirB/
+    LICENSE -- a 313B file containing the image license info
+    Minneapolis-20060311.jpg -- a 9245B file containing an image of Minneapolis
+  dirC/ -- only created for Test 6
+  dirD/ -- an empty directory
+     
 
 #### Test 1: Invalid File
 This checks that an exception is thrown if we attempt to scan a 
