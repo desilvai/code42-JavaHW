@@ -364,18 +364,22 @@ Checks that symlinks are not followed and that we do not have a divide
 by 0 error when computing the average.
 
 * Preparation
+    ```
     cd src/test/resources/scanning/
     mkdir dirC
     cd dirC
     ln -s $(cd "../dirA"; echo $(pwd)) dirA
     ln -s $(cd "../dirB"; echo $(pwd)) dirB
+    ```
     
 * Execution
+    ```
     >$java -classpath build/libs/code42-1.0.jar  com.code42.scanning.FileScannerDriver src/test/resources/scanning/dirC
     Number of files scanned: 0
     Number of directories scanned: 3
     Total size (in B) of all scanned files: 0
     Average size (in B) of all scanned files: -1
+    ```
 
 Notice that the result was a negative average size.  At this point, that
 means that the size is not computable.  I use -1 because I didn't want 
