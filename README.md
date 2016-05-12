@@ -250,7 +250,7 @@ to throw an ArithmeticException).
 We want to check that the getTotal() function returns a value that has been 
 rounded to 2 decimal places.
 
-    >java -classpath build/libs/code42-1.0.jar  com.code42.inputAnalysis.InputAnalysisDriver src/test/resources/fileProcessor/sumTest.txt "" " "
+    >$ java -classpath build/libs/code42-1.0.jar  com.code42.inputAnalysis.InputAnalysisDriver src/test/resources/fileProcessor/sumTest.txt "" " "
     Printed String:
       Sum of Numbers: 6.07
       Average of Numbers: 2.02
