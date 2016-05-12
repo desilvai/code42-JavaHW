@@ -45,6 +45,18 @@ public class FileScannerTest
         FileScanner.scan(fileName);
     }
 
+    /**
+     * Attempts to scan an invalid path.
+     *
+     * @throws IOException  We expect that a NoSuchFileException is thrown.
+     */
+    @Test(expected = NoSuchFileException.class)
+    public void testScanOfNullFile() throws IOException
+    {
+        String fileName = null;
+        FileScanner.scan(fileName);
+    }
+
 
     /**
      * Scans a single non-empty file to ensure it can handle non-directory

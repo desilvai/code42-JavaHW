@@ -12,6 +12,7 @@ package com.code42.scanning;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -28,9 +29,18 @@ public class FileScanner
      * filesystem.  This does not follow symlinks.
      * @param path  the path to scan for files.
      * @return a summary of the results of the scan.
+     * @throws NoSuchFileException  if the file path is null
+     * @throws IOException  if there is a problem reading the path info or
+     *      walking the tree
      */
     public static ScanResult scan(String path) throws IOException
     {
+        if(null == path)
+        {
+            // No file to process.  Throw an exception.
+            throw new NoSuchFileException("The file name cannot be null.");
+        }
+
         ScanResult result = new ScanResult();
         Path root = Paths.get(path);
 
