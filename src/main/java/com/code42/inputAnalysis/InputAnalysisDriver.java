@@ -17,9 +17,15 @@ import java.io.IOException;
  */
 public class InputAnalysisDriver
 {
-    //--------------------------------------------------------------------
-    //  Main
-    //--------------------------------------------------------------------
+    /**
+     * The main for the test driver that can be used to verify the
+     * FileProcessor.
+     * @param args  the command-line arguments.  This application takes
+     *              a few.  The first argument is the path to the file
+     *              that should be analyzed.  All other arguments are
+     *              strings that we will check if they are present in the
+     *              parsed file.
+     */
     public static void main(String args[])
     {
         // Check the command-line arguments.

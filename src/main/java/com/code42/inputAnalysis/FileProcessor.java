@@ -331,11 +331,9 @@ public final class FileProcessor
         }
 
         BigDecimal quantity = BigDecimal.valueOf(numbers.size());
-        return sum.divide(quantity);
-
-//        // Don't need to round unless we make this public.
-//        return sum.divide(quantity).setScale(DECIMAL_PRECISION,
-//                                             ROUNDING_MODE);
+        return sum.divide(quantity,
+                          DECIMAL_PRECISION,
+                          ROUNDING_MODE);
     }
 
 
@@ -374,7 +372,10 @@ public final class FileProcessor
             // (because the size is non-zero and even).
             BigDecimal medianLow = numbers.get(medianPosition - 1);
 
-            median = medianHigh.add(medianLow).divide(BigDecimal.valueOf(2));
+            median = medianHigh.add(medianLow)
+                               .divide(BigDecimal.valueOf(2),
+                                       DECIMAL_PRECISION,
+                                       ROUNDING_MODE);
         }
 
         return median;
