@@ -1,6 +1,12 @@
 code42-JavaHW
 =============
-Code42 Interview Code
+This document describes how to build and test the Code42 homework.  
+While some of the testing is automated, the instructions implied the 
+need for test drivers as well.  As a result, both automated and manual
+tests are provided.  The automated tests use JUnit while the manual 
+tests are described in this document.  The manual tests provide an easy
+way to test output to standard out, a requirement of at least one of the
+exercises.
 
 
 Build Instructions
@@ -21,6 +27,10 @@ Build Instructions
 
 Testing: Exercise 1, The Input Analyzer
 ---------------------------------------
+The JUnit tests are executed as part of the gradle build.  To add 
+additional tests, add or modify the testing classes located in the
+`com.code42.inputAnalysis.test` package under `src/test/java`.
+
 To execute a non-JUnit test, you can use the included test driver.  Run:
 `java -classpath build/libs/code42-1.0.jar com.code42.inputAnalysis.InputAnalysisDriver <pathToFile> [stringToFind1] [stringToFind2] ...`
 where 
@@ -264,6 +274,10 @@ rounded to 2 decimal places.
 
 Testing: Exercise 2, The File Scanner
 -------------------------------------
+The JUnit tests are executed as part of the gradle build.  To add 
+additional tests, add or modify the testing classes located in the
+`com.code42.scanning.test` package under `src/test/java`.
+
 To execute a non-JUnit test, you can use the included test driver.  Run:
 `java -classpath build/libs/code42-1.0.jar  com.code42.scanning.FileScannerDriver <pathToScan>`
 

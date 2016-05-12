@@ -14,6 +14,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.nio.file.NoSuchFileException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -36,6 +37,11 @@ public final class FileProcessor
      * The precision of the decimals to use when printing numbers.
      */
     private static final int DECIMAL_PRECISION = 2;
+
+    /**
+     * We will always round up if the digit to the right of the precision
+     * digit is 5 or more.  We will round down otherwise.
+     */
     private static final RoundingMode ROUNDING_MODE = RoundingMode.HALF_UP;
 
 
@@ -95,13 +101,18 @@ public final class FileProcessor
      * Reads in a given text file and parses it, looking for numbers and
      * non-numeric strings.  For numbers,
      * @param file  the file to read in and parse
+     * @throws NoSuchFileException  if the file name is null
+     * @throws java.io.FileNotFoundException  if there is no file on the
+     *              filesystem with the given name.
+     * @throws IOException  if there was some other error occurred when
+     *              opening/reading the specified file.
      */
     public FileProcessor(File file) throws IOException
     {
         if(null == file)
         {
-            // No file to process.  Exit.
-            return;
+            // No file to process.  Throw an exception.
+            throw new NoSuchFileException("The file name cannot be null.");
         }
 
         // Using a BufferedReader here handles multiple newline formats.
@@ -361,6 +372,10 @@ public final class FileProcessor
             // position size / 2 (integer division).  There is no need
             // to add 1 to this since the array is 0-indexed.
             median = numbers.get(medianPosition);
+
+            // Round the median
+            median = median.setScale(DECIMAL_PRECISION,
+                                     ROUNDING_MODE);
         }
         else  // There is an even number of elements
         {
@@ -379,9 +394,5 @@ public final class FileProcessor
         }
 
         return median;
-
-//        // Don't need to round unless we make this public.
-//        return median.setScale(DECIMAL_PRECISION,
-//                               ROUNDING_MODE);
     }
 }
