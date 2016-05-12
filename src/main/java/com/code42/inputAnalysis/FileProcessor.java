@@ -121,33 +121,6 @@ public final class FileProcessor
     //  Public API
     //--------------------------------------------------------------------
     /**
-     * Reads in a given text file and parses it, looking for numbers and
-     * non-numeric strings.  For numbers,
-     * @param file  the file to read in and parse
-     */
-    public void readFile(File file) throws IOException
-    {
-        if(null == file)
-        {
-            // No file to process.  Exit.
-            return;
-        }
-
-        // Using a BufferedReader here handles multiple newline formats.
-        try( BufferedReader reader = new BufferedReader(new FileReader(file)) )
-        {
-            fileName = file.getName();
-
-            reader.lines().forEach(this::processLine);
-
-            // Sort the list of numbers now so we don't have to do it every
-            // time we want the median.
-            Collections.sort(numbers);
-        }
-    }
-
-
-    /**
      * Gets the sum of all the numbers that appeared in the file.
      *
      * @return the sum of all the numbers in the file.  If the sum is too
@@ -409,13 +382,5 @@ public final class FileProcessor
 //        // Don't need to round unless we make this public.
 //        return median.setScale(DECIMAL_PRECISION,
 //                               ROUNDING_MODE);
-    }
-
-
-    //--------------------------------------------------------------------
-    //  Main
-    //--------------------------------------------------------------------
-    public static void main(String args[])
-    {
     }
 }

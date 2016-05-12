@@ -22,6 +22,144 @@ Build Instructions
 Testing: Exercise 1, The Input Analyzer
 ---------------------------------------
 
+### Example Test Executions
+
+#### Test 1: Invalid File
+    >$ java -classpath build/libs/code42-1.0.jar  com.code42.inputAnalysis.InputAnalysisDriver src/test/resources/fileProcessor/emptySample
+    Error encountered running the analysis.  Error details below:
+    
+    java.io.FileNotFoundException: src/test/resources/fileProcessor/emptySample (No such file or directory)
+        at java.io.FileInputStream.open0(Native Method)
+        at java.io.FileInputStream.open(FileInputStream.java:195)
+        at java.io.FileInputStream.<init>(FileInputStream.java:138)
+        at java.io.FileReader.<init>(FileReader.java:72)
+        at com.code42.inputAnalysis.FileProcessor.<init>(FileProcessor.java:108)
+        at com.code42.inputAnalysis.InputAnalysisDriver.main(InputAnalysisDriver.java:47)
+    
+    
+    Terminating test driver...
+    
+    
+#### Test 2: Directory
+    >$ java -classpath build/libs/code42-1.0.jar  com.code42.inputAnalysis.InputAnalysisDriver src/test/resources/fileProcessor
+    Error encountered running the analysis.  Error details below:
+    
+    java.io.FileNotFoundException: src/test/resources/fileProcessor (Is a directory)
+        at java.io.FileInputStream.open0(Native Method)
+        at java.io.FileInputStream.open(FileInputStream.java:195)
+        at java.io.FileInputStream.<init>(FileInputStream.java:138)
+        at java.io.FileReader.<init>(FileReader.java:72)
+        at com.code42.inputAnalysis.FileProcessor.<init>(FileProcessor.java:108)
+        at com.code42.inputAnalysis.InputAnalysisDriver.main(InputAnalysisDriver.java:47)
+    
+    
+    Terminating test driver...
+
+
+#### Test 3: Empty File, No Search
+    >$ java -classpath build/libs/code42-1.0.jar  com.code42.inputAnalysis.InputAnalysisDriver src/test/resources/fileProcessor/emptySampleInput.txt 
+    Printed String:
+      Sum of Numbers: 0.00
+      Average of Numbers: UNDEFINED
+      Median of Numbers: NONE
+      Percent of lines that are numbers: UNDEFINED (no lines parsed)
+      Non-numeric strings in file (with count): NONE
+    
+    
+    Sum: 0.0
+    Number of Numbers: 0
+    
+    
+    Done!
+    
+   
+#### Test 3: Empty File, With String Search
+    >$ java -classpath build/libs/code42-1.0.jar  com.code42.inputAnalysis.InputAnalysisDriver src/test/resources/fileProcessor/emptySampleInput.txt someString1 someString2 foo
+    Printed String:
+      Sum of Numbers: 0.00
+      Average of Numbers: UNDEFINED
+      Median of Numbers: NONE
+      Percent of lines that are numbers: UNDEFINED (no lines parsed)
+      Non-numeric strings in file (with count): NONE
+    
+    
+    Sum: 0.0
+    Number of Numbers: 0
+    
+    
+    Strings Present?
+      "someString1":  false
+      "someString2":  false
+      "foo":  false
+    
+    
+    Done!
+
+   
+
+#### Test 4: Provided Sample Input, With String Search
+    >$ java -classpath build/libs/code42-1.0.jar  com.code42.inputAnalysis.InputAnalysisDriver src/test/resources/fileProcessor/givenSampleInput.txt someString1 someString2 foo
+     Printed String:
+       Sum of Numbers: 16.20
+       Average of Numbers: 5.40
+       Median of Numbers: 5.00
+       Percent of lines that are numbers: 42.86
+       Non-numeric strings in file (with count):
+         The quick brown fox:1
+         jumped over the lazy dog.:1
+         foo:2
+     
+     
+     Sum: 16.2
+     Number of Numbers: 3
+     
+     
+     Strings Present?
+       "someString1":  false
+       "someString2":  false
+       "foo":  true
+     
+     
+     Done!
+
+
+#### Test 5: Double Overflow
+    >$ java -classpath build/libs/code42-1.0.jar  com.code42.inputAnalysis.InputAnalysisDriver src/test/resources/fileProcessor/overflowDouble.txt 0x555 1.7976931348623157E308
+    Printed String:
+      Sum of Numbers: 1258385194403620990000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000.00
+      Average of Numbers: 179769313486231570000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000.00
+      Median of Numbers: 179769313486231570000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000.00
+      Percent of lines that are numbers: 70.00
+      Non-numeric strings in file (with count):
+        this is a realy large string unvnerivneirnvai inQPOM NVOIMP OUDVNWIeOJ I  WENWOIEVWIEMc ebiwebouneoeva .e weeoi !#@^ jvenro 6 ^# 7372294:1
+        aaaaaaaaa:1
+        0x555:1
+    
+    
+    Sum: Infinity
+    Number of Numbers: 7
+    
+    
+    Strings Present?
+      "0x555":  true
+      "1.7976931348623157E308":  false
+    
+    
+    Done!
+
+Note, this was checked using the calculator tool in Linux (it did some 
+rounding, but it seemed correct otherwise) and gedit to count the 
+columns.
+
+This test case checks a number of things.  First, it checks that we can 
+overflow a double without an issue.  Second, when we overflow the 
+double, we can convert it back to a double correctly (as Infinity).  
+Third, we check that "0x555" gets treated as a string and not a number.
+Fourth, we check that MAX_DOUBLE is not included as a string present in 
+the file.
+
+
+
 
 Testing: Exercise 2, The File Scanner
 -------------------------------------
