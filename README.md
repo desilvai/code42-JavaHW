@@ -5,10 +5,19 @@ Code42 Interview Code
 
 Build Instructions
 ------------------
-* To build using the enclosed gradle wrapper, execute the following:
-  `./gradlew build`
-  This was tested using gradle version
-
+* To build using gradle, execute the following (from the directory 
+  containing `build.gradle`):
+  
+      gradle wrapper
+      ./gradlew build
+      
+  This was tested using gradle version 1.4 on Ubuntu 14.04 LTS.  This 
+  will configure the gradle wrapper so we are using a consistent gradle 
+  version, build the jar file (`build/libs/code42-1.0.jar`) for the 
+  exercises, and run all JUnit tests.  The output of the JUnit tests can
+  be found in `build/reports/tests/index.html`.  To build on Windows,
+  replace `./gradlew` with `gradle.bat`.
+      
 
 Testing: Exercise 1, The Input Analyzer
 ---------------------------------------
@@ -81,7 +90,6 @@ Included are some example test executions, both the command and expected output.
 
 #### Test 6: Symlinks
 * Preparation
-
     cd src/test/resources/scanning/
     mkdir dirC
     cd dirC
