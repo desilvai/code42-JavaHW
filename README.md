@@ -384,6 +384,7 @@ by 0 error when computing the average.
     cd dirC
     ln -s $(cd "../dirA"; echo $(pwd)) dirA
     ln -s $(cd "../dirB"; echo $(pwd)) dirB
+    cd ../../../../..
     ```
     
 * Execution

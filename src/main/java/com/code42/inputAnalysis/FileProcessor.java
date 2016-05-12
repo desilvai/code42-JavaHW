@@ -333,7 +333,7 @@ public final class FileProcessor
      * @return  the arithmetic mean of the numbers in the file or null if
      *          there are no numbers in the file
      */
-    private Number getArithmeticMean()
+    private BigDecimal getArithmeticMean()
     {
         // Make sure we don't divide by 0!
         if(numbers.isEmpty())
@@ -354,7 +354,7 @@ public final class FileProcessor
      * @return  the median value of all numbers in the file or null if there
      *          are no numbers in the file.
      */
-    private Number getMedian()
+    private BigDecimal getMedian()
     {
         // If there are no numbers, the median is undefined.
         if(numbers.isEmpty())
