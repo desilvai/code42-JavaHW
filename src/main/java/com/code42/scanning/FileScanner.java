@@ -120,13 +120,24 @@ public class FileScanner
             return totalBytesInFiles;
         }
 
+        // TODO -- I'd like to have this throw an exception, but I don't want
+        //   to change the signature and I'm not sure if the target group is
+        //   ok with extending RuntimeException and throwing those.  For now,
+        //   I'll just return -1.
         /**
          * Gets the average size of the files scanned.
          * @return  the average size of the scanned files (rounded down to the
-         *          nearest byte)
+         *          nearest byte).  Returns -1 if there are no files in the
+         *          directory.
          */
         public long getAvgBytes()
         {
+            // Don't try to divide by 0.
+            if(numberOfFiles == 0)
+            {
+                return -1;
+            }
+
             // Long arithmetic!  Naturally truncates.
             return totalBytesInFiles / (long) numberOfFiles;
         }
