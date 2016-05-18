@@ -9,6 +9,21 @@ way to test output to standard out, a requirement of at least one of the
 exercises.
 
 
+Contents
+--------
+There are two exercises here.  The first, processes a text file, counting 
+the occurrences of each non-numeric line and performing some basic 
+operations on the numerics.  This code can be found in the 
+`com.code42.inputAnalysis` package.  The second, implements a provided API
+for walking a provided path, visiting all its subsirectories (if it is a
+directory path), and collecting statistics on all of the files.  This
+utility's code can be found in the `com.code42.scanning` package.
+
+All implementations are located in the `src/main/java` directory, while the 
+JUnit tests are located in the `src/test/java` directory.  The test 
+resources can be found in the `src/test/resources` directory.
+
+
 Build Instructions
 ------------------
 * To build using gradle, execute the following (from the directory 
